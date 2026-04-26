@@ -37,7 +37,13 @@ import {
   MessageCircle,
   Trophy,
   Wind,
-  Flame
+  Flame,
+  Mail,
+  CheckCircle,
+  Clock,
+  Quote,
+  Headphones,
+  Book
 } from 'lucide-react';
 import { 
   LineChart, 
@@ -151,6 +157,8 @@ interface Session {
 }
 
 type PageId = 
+  | 'login'
+  | 'register'
   | 'home' 
   | 'explore' 
   | 'diary' 
@@ -159,6 +167,8 @@ type PageId =
   | 'mood-checkin'
   | 'breathing'
   | 'stats'
+  | 'duration-stats'
+  | 'moments'
   | 'assessment'
   | 'course-detail'
   | 'community'
@@ -266,6 +276,92 @@ const Navbar = ({ activeTab, onTabChange }: { activeTab: string, onTabChange: (i
 
 // --- Page Views ---
 
+const Logo = ({ className = "" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 482 482" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clipPath="url(#clip0_127_268)">
+      <path d="M378.445 0H103.555C46.363 0 0 46.363 0 103.555V378.445C0 435.637 46.363 482 103.555 482H378.445C435.637 482 482 435.637 482 378.445V103.555C482 46.363 435.637 0 378.445 0Z" fill="url(#paint0_linear_127_268)"/>
+      <path d="M241 128.507C241 128.507 363.406 -5.28128 452.11 101.747C540.814 208.776 241 422.837 241 422.837C241 422.837 -58.8096 208.776 29.8897 101.747C118.594 -5.28128 241 128.507 241 128.507Z" fill="url(#paint1_radial_127_268)"/>
+      <path d="M220.868 138.994H261.127C264.265 138.994 265.952 140.563 266.187 143.701L286.771 418.13C287.007 421.268 285.555 422.837 282.417 422.837H199.583C196.445 422.837 194.994 421.268 195.229 418.13L215.808 143.701C216.043 140.563 217.73 138.994 220.868 138.994Z" fill="#32ABFD"/>
+      <path d="M269.388 103.512H212.617C210.168 103.512 208.183 105.498 208.183 107.946V125.687C208.183 128.136 210.168 130.121 212.617 130.121H269.388C271.837 130.121 273.822 128.136 273.822 125.687V107.946C273.822 105.498 271.837 103.512 269.388 103.512Z" fill="#32ABFD"/>
+      <path d="M244.954 63.8697L274.302 98.8053C276.938 101.943 276.687 103.512 273.549 103.512H208.451C205.313 103.512 205.062 101.943 207.698 98.8053L237.046 63.8697C239.682 60.7317 242.318 60.7317 244.954 63.8697Z" fill="#32ABFD"/>
+      <path d="M241 124.802C241 124.802 253.417 116.819 253.417 110.61C253.417 105.287 247.209 103.512 241 109.726C234.791 103.517 228.583 105.292 228.583 110.61C228.583 116.819 241 124.802 241 124.802Z" fill="white"/>
+    </g>
+    <defs>
+      <linearGradient id="paint0_linear_127_268" x1="41.2237" y1="28.5395" x2="448.931" y2="482" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#D4DAFF"/>
+        <stop offset="1" stopColor="#ACDFFF"/>
+      </linearGradient>
+      <radialGradient id="paint1_radial_127_268" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(240.868 240.759) scale(226.982 180.869)">
+        <stop stopColor="#FFC107" stopOpacity="0.9"/>
+        <stop offset="1" stopColor="#FFC107" stopOpacity="0"/>
+      </radialGradient>
+      <clipPath id="clip0_127_268">
+        <rect width="482" height="482" fill="white"/>
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+const LoginView = ({ onLogin, onNavigate }: { onLogin: () => void, onNavigate: (id: PageId) => void }) => (
+  <div className="flex-1 flex flex-col relative min-h-0 transition-colors duration-300 px-8 justify-center z-10">
+    <div className="text-center mb-12">
+      <Logo className="w-24 h-24 mx-auto mb-6 drop-shadow-md" />
+      <h1 className="text-3xl font-bold text-[#2A2D34] dark:text-slate-100 mb-2">欢迎回到心港驿站</h1>
+      <p className="text-sm text-[#5D6979] dark:text-slate-400">继续你的心灵疗愈之旅</p>
+    </div>
+    <div className="space-y-4">
+      <div className="relative">
+        <Mail size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input type="email" placeholder="邮箱" className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-[#89CFF0] dark:focus:border-indigo-400 dark:text-slate-200 transition-colors" />
+      </div>
+      <div className="relative">
+        <Lock size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input type="password" placeholder="密码" className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-[#89CFF0] dark:focus:border-indigo-400 dark:text-slate-200 transition-colors" />
+      </div>
+      <button onClick={onLogin} className="w-full py-4 bg-[#2A2D34] dark:bg-slate-100 text-white dark:text-slate-900 rounded-2xl font-bold shadow-lg mt-4 hover:scale-[0.98] transition-transform">
+        登录
+      </button>
+    </div>
+    <div className="mt-8 text-center">
+      <button onClick={() => onNavigate('register')} className="text-sm text-[#89CFF0] dark:text-indigo-400 font-medium hover:underline">
+        没有账号？去注册
+      </button>
+    </div>
+  </div>
+);
+
+const RegisterView = ({ onRegister, onNavigate }: { onRegister: () => void, onNavigate: (id: PageId) => void }) => (
+  <div className="flex-1 flex flex-col relative min-h-0 transition-colors duration-300 px-8 justify-center z-10">
+    <div className="text-center mb-12">
+      <Logo className="w-20 h-20 mx-auto mb-4 drop-shadow-md" />
+      <h1 className="text-3xl font-bold text-[#2A2D34] dark:text-slate-100 mb-2">创建新账号</h1>
+      <p className="text-sm text-[#5D6979] dark:text-slate-400">开启你的专属心灵空间</p>
+    </div>
+    <div className="space-y-4">
+      <div className="relative">
+        <User size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input type="text" placeholder="昵称" className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-[#89CFF0] dark:focus:border-indigo-400 dark:text-slate-200 transition-colors" />
+      </div>
+      <div className="relative">
+        <Mail size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input type="email" placeholder="邮箱" className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-[#89CFF0] dark:focus:border-indigo-400 dark:text-slate-200 transition-colors" />
+      </div>
+      <div className="relative">
+        <Lock size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <input type="password" placeholder="密码" className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 focus:outline-none focus:border-[#89CFF0] dark:focus:border-indigo-400 dark:text-slate-200 transition-colors" />
+      </div>
+      <button onClick={onRegister} className="w-full py-4 bg-[#89CFF0] dark:bg-indigo-500 text-white rounded-2xl font-bold shadow-lg mt-4 hover:scale-[0.98] transition-transform">
+        注册并登录
+      </button>
+    </div>
+    <div className="mt-8 text-center">
+      <button onClick={() => onNavigate('login')} className="text-sm text-[#5D6979] dark:text-slate-400 font-medium hover:underline">
+        已有账号？去登录
+      </button>
+    </div>
+  </div>
+);
+
 const HomeView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => {
   const [insight, setInsight] = useState('加载今日灵感...');
   const [isInsightLoading, setIsInsightLoading] = useState(true);
@@ -364,7 +460,7 @@ const HomeView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => {
       </div>
     </div>
   </div>
-);
+  );
 };
 
 const MoodCheckinView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => {
@@ -751,13 +847,33 @@ const DiaryView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => {
   );
 };
 
-const ExploreView = ({ onNavigate, onPlay }: { onNavigate: (id: PageId) => void, onPlay: (session: Session) => void }) => (
+const ExploreView = ({ onNavigate, onPlay }: { onNavigate: (id: PageId) => void, onPlay: (session: Session) => void }) => {
+  const categories = ['全部', '睡眠', '专注', '放松', '冥想'];
+  const [activeCategory, setActiveCategory] = useState('全部');
+
+  return (
   <div className="flex-1 flex flex-col relative min-h-0 transition-colors duration-300">
     <div className="h-[56px] px-6 flex items-center justify-between relative z-10">
       <h1 className="text-[#2A2D34] dark:text-slate-100 font-medium">我的白噪音库</h1>
       <Search size={20} className="text-[#5D6979] dark:text-slate-400" />
     </div>
     <div className="flex-1 overflow-y-auto px-5 py-4 space-y-6 relative z-10 hide-scrollbar pb-24">
+      <div className="flex gap-2 overflow-x-auto hide-scrollbar mb-2">
+        {categories.map(c => (
+          <button 
+            key={c} 
+            onClick={() => setActiveCategory(c)} 
+            className={cn(
+              "px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors", 
+              activeCategory === c 
+                ? "bg-[#2A2D34] dark:bg-slate-100 text-white dark:text-slate-900" 
+                : "bg-white/50 dark:bg-slate-800/50 text-[#5D6979] dark:text-slate-400 border border-white/20 dark:border-slate-700/30"
+            )}
+          >
+            {c}
+          </button>
+        ))}
+      </div>
       <div className="grid grid-cols-2 gap-4">
         {[
           { title: '林间清风', icon: Wind, color: 'bg-[#89CFF0]/20 dark:bg-[#89CFF0]/10', iconColor: 'text-[#89CFF0] dark:text-[#89CFF0]', count: '1,240', audioUrl: 'webaudio://pink' },
@@ -789,7 +905,8 @@ const ExploreView = ({ onNavigate, onPlay }: { onNavigate: (id: PageId) => void,
       </div>
     </div>
   </div>
-);
+  );
+};
 
 const HealingView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => {
   const [messages, setMessages] = useState<Message[]>(() => {
@@ -1016,7 +1133,7 @@ const HealingView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => {
 
 const ProfileView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => (
   <div className="flex-1 flex flex-col relative min-h-0 transition-colors duration-300">
-    <div className="h-[220px] bg-gradient-to-br from-[#E6E6FA] to-[#F8F8FF] dark:from-indigo-900/40 dark:to-slate-900 relative flex flex-col items-center justify-center transition-colors duration-300">
+    <div className="h-[240px] bg-gradient-to-br from-[#E6E6FA] to-[#F8F8FF] dark:from-indigo-900/40 dark:to-slate-900 relative flex flex-col items-center justify-center transition-colors duration-300">
       <div className="w-24 h-24 rounded-full border-4 border-white dark:border-slate-800 shadow-lg overflow-hidden mb-3">
         <img 
           className="w-full h-full object-cover" 
@@ -1026,11 +1143,12 @@ const ProfileView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => (
         />
       </div>
       <h2 className="text-lg font-bold text-[#2A2D34] dark:text-slate-100">沐浴时光</h2>
-      <p className="text-xs text-[#5D6979] dark:text-slate-400">加入 心港驿站 第 342 天</p>
+      <p className="text-xs text-[#5D6979] dark:text-slate-400 mt-1">加入 心港驿站 第 342 天</p>
+      <p className="text-xs text-[#2A2D34]/70 dark:text-slate-300 mt-2 px-8 text-center">“在喧嚣的世界里，寻找内心的宁静与平和。”</p>
     </div>
-    <div className="flex-1 px-6 space-y-6 pt-8 relative z-10 overflow-y-auto hide-scrollbar pb-24">
+    <div className="flex-1 px-6 space-y-6 pt-6 relative z-10 overflow-y-auto hide-scrollbar pb-24">
       <div className="grid grid-cols-3 gap-4">
-        <div className="text-center cursor-pointer" onClick={() => onNavigate('stats')}>
+        <div className="text-center cursor-pointer" onClick={() => onNavigate('duration-stats')}>
           <p className="text-lg font-bold text-[#2A2D34] dark:text-slate-100">4.2k</p>
           <p className="text-[10px] text-slate-400 dark:text-slate-500">累计时长</p>
         </div>
@@ -1038,7 +1156,7 @@ const ProfileView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => (
           <p className="text-lg font-bold text-[#2A2D34] dark:text-slate-100">56</p>
           <p className="text-[10px] text-slate-400 dark:text-slate-500">已修课程</p>
         </div>
-        <div className="text-center cursor-pointer" onClick={() => onNavigate('achievements')}>
+        <div className="text-center cursor-pointer" onClick={() => onNavigate('moments')}>
           <p className="text-lg font-bold text-[#2A2D34] dark:text-slate-100">128</p>
           <p className="text-[10px] text-slate-400 dark:text-slate-500">收藏瞬间</p>
         </div>
@@ -1289,7 +1407,7 @@ const PlayerView = ({ onNavigate, session }: { onNavigate: (id: PageId) => void,
   );
 };
 
-const SettingsView = ({ onNavigate, isDarkMode, toggleDarkMode }: { onNavigate: (id: PageId) => void, isDarkMode: boolean, toggleDarkMode: () => void }) => (
+const SettingsView = ({ onNavigate, isDarkMode, toggleDarkMode, onLogout }: { onNavigate: (id: PageId) => void, isDarkMode: boolean, toggleDarkMode: () => void, onLogout: () => void }) => (
   <div className="flex-1 flex flex-col relative min-h-0">
     <div className="h-[56px] px-6 flex items-center bg-white dark:bg-slate-950 relative z-10 transition-colors duration-300">
       <button onClick={() => onNavigate('profile')}>
@@ -1334,7 +1452,7 @@ const SettingsView = ({ onNavigate, isDarkMode, toggleDarkMode }: { onNavigate: 
         </div>
       </div>
 
-      <button className="w-full py-4 text-red-400 dark:text-red-500 text-sm font-medium">退出登录</button>
+      <button onClick={onLogout} className="w-full py-4 text-red-400 dark:text-red-500 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-900/20 rounded-2xl transition-colors">退出登录</button>
       
       <div className="text-center pt-10">
         <p className="text-[10px] text-slate-300 dark:text-slate-600">© 2026 心港驿站 AI. All rights reserved.</p>
@@ -1702,6 +1820,180 @@ const CourseDetailView = ({ onNavigate, onPlay }: { onNavigate: (id: PageId) => 
   );
 };
 
+const DurationStatsView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => {
+  const data = [
+    { name: '10月', value: 300 },
+    { name: '11月', value: 450 },
+    { name: '12月', value: 200 },
+    { name: '1月', value: 600 },
+    { name: '2月', value: 400 },
+    { name: '3月', value: 900 },
+  ];
+
+  return (
+    <div className="flex-1 flex flex-col relative min-h-0 transition-colors duration-300">
+      <div className="h-[56px] px-6 flex items-center bg-white dark:bg-slate-950 relative z-10 transition-colors duration-300">
+        <button onClick={() => onNavigate('profile')}>
+          <ChevronLeft size={24} className="mr-4 text-[#2A2D34] dark:text-slate-200" />
+        </button>
+        <h1 className="text-[#2A2D34] dark:text-slate-100 font-medium">累计时长</h1>
+      </div>
+      <div className="flex-1 overflow-y-auto px-6 py-6 space-y-8 relative z-10 hide-scrollbar pb-24">
+        <div className="text-center space-y-2">
+          <p className="text-sm text-slate-500 dark:text-slate-400">总计专注与放松</p>
+          <div className="flex items-baseline justify-center gap-1">
+            <span className="text-5xl font-bold text-[#2A2D34] dark:text-slate-100">4,200</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400">分钟</span>
+          </div>
+        </div>
+
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-700">
+          <h3 className="text-sm font-bold text-[#2A2D34] dark:text-slate-100 mb-6">近半年时长分布</h3>
+          <div className="h-[200px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data}>
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#94a3b8' }} dy={10} />
+                <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                <Bar dataKey="value" fill="#89CFF0" radius={[4, 4, 4, 4]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="text-sm font-bold text-[#2A2D34] dark:text-slate-100">时长成就</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-2xl border border-blue-100 dark:border-blue-800/30">
+              <div className="w-10 h-10 bg-blue-100 dark:bg-blue-800/50 rounded-full flex items-center justify-center mb-3">
+                <Leaf size={20} className="text-blue-500 dark:text-blue-400" />
+              </div>
+              <p className="text-xs text-blue-600/70 dark:text-blue-400/70 font-medium mb-1">冥想学徒</p>
+              <p className="text-sm font-bold text-blue-900 dark:text-blue-300">达成 1 小时</p>
+            </div>
+            <div className="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-2xl border border-indigo-100 dark:border-indigo-800/30">
+              <div className="w-10 h-10 bg-indigo-100 dark:bg-indigo-800/50 rounded-full flex items-center justify-center mb-3">
+                <Clock size={20} className="text-indigo-500 dark:text-indigo-400" />
+              </div>
+              <p className="text-xs text-indigo-600/70 dark:text-indigo-400/70 font-medium mb-1">初级行者</p>
+              <p className="text-sm font-bold text-indigo-900 dark:text-indigo-300">达成 10 小时</p>
+            </div>
+            <div className="bg-emerald-50 dark:bg-emerald-900/20 p-4 rounded-2xl border border-emerald-100 dark:border-emerald-800/30">
+              <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-800/50 rounded-full flex items-center justify-center mb-3">
+                <Trophy size={20} className="text-emerald-500 dark:text-emerald-400" />
+              </div>
+              <p className="text-xs text-emerald-600/70 dark:text-emerald-400/70 font-medium mb-1">宁静大师</p>
+              <p className="text-sm font-bold text-emerald-900 dark:text-emerald-300">达成 50 小时</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const MomentsView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => {
+  const [activeTab, setActiveTab] = useState('全部');
+  const tabs = ['全部', '金句', '声音', '日记'];
+
+  const moments = [
+    { id: 1, type: 'quote', content: '在喧嚣的世界里，寻找内心的宁静与平和。', author: '心港驿站', date: '2026-03-26', color: 'from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20' },
+    { id: 2, type: 'audio', content: '林间清风', duration: '15分钟', date: '2026-03-25', color: 'from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:to-teal-500/20' },
+    { id: 3, type: 'diary', content: '今天心情很平静，完成了一次深呼吸练习。感觉整个人都轻松了许多。', mood: '😌', date: '2026-03-24', color: 'from-blue-500/10 to-cyan-500/10 dark:from-blue-500/20 dark:to-cyan-500/20' },
+    { id: 4, type: 'quote', content: '接纳不完美的自己，是爱自己的开始。', author: '心理学指南', date: '2026-03-22', color: 'from-rose-500/10 to-orange-500/10 dark:from-rose-500/20 dark:to-orange-500/20' },
+    { id: 5, type: 'audio', content: '深夜海浪', duration: '30分钟', date: '2026-03-20', color: 'from-sky-500/10 to-blue-500/10 dark:from-sky-500/20 dark:to-blue-500/20' },
+  ];
+
+  const filteredMoments = activeTab === '全部' 
+    ? moments 
+    : moments.filter(m => (activeTab === '金句' && m.type === 'quote') || (activeTab === '声音' && m.type === 'audio') || (activeTab === '日记' && m.type === 'diary'));
+
+  return (
+    <div className="flex-1 flex flex-col relative min-h-0 transition-colors duration-300">
+      <div className="h-[56px] px-6 flex items-center bg-white/80 dark:bg-slate-950/80 backdrop-blur-md relative z-20 transition-colors duration-300">
+        <button onClick={() => onNavigate('profile')}>
+          <ChevronLeft size={24} className="mr-4 text-[#2A2D34] dark:text-slate-200" />
+        </button>
+        <h1 className="text-[#2A2D34] dark:text-slate-100 font-medium">收藏瞬间</h1>
+      </div>
+      
+      <div className="px-6 py-2 relative z-10">
+        <div className="flex gap-2 overflow-x-auto hide-scrollbar">
+          {tabs.map(tab => (
+            <button 
+              key={tab} 
+              onClick={() => setActiveTab(tab)} 
+              className={cn(
+                "px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors", 
+                activeTab === tab 
+                  ? "bg-[#2A2D34] dark:bg-slate-100 text-white dark:text-slate-900 shadow-md" 
+                  : "bg-white/50 dark:bg-slate-800/50 text-[#5D6979] dark:text-slate-400 border border-white/20 dark:border-slate-700/30"
+              )}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 relative z-10 hide-scrollbar pb-24">
+        <AnimatePresence mode="popLayout">
+          {filteredMoments.map((moment, index) => (
+            <motion.div 
+              key={moment.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              className={`p-5 rounded-3xl bg-gradient-to-br ${moment.color} border border-white/50 dark:border-white/5 shadow-sm relative overflow-hidden`}
+            >
+              {moment.type === 'quote' && (
+                <div className="relative z-10">
+                  <Quote size={40} className="absolute -top-2 -left-2 text-indigo-500/10 dark:text-indigo-400/10 rotate-180" />
+                  <p className="text-[15px] font-serif text-[#2A2D34] dark:text-slate-200 leading-relaxed mt-4 relative z-10">
+                    "{moment.content}"
+                  </p>
+                  <div className="mt-4 flex items-center justify-between">
+                    <span className="text-xs text-slate-500 dark:text-slate-400">— {moment.author}</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">{moment.date}</span>
+                  </div>
+                </div>
+              )}
+
+              {moment.type === 'audio' && (
+                <div className="flex items-center gap-4 relative z-10">
+                  <div className="w-12 h-12 rounded-full bg-white/60 dark:bg-black/20 flex items-center justify-center shadow-sm backdrop-blur-sm">
+                    <Play size={20} className="text-emerald-600 dark:text-emerald-400 ml-1" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-sm font-bold text-[#2A2D34] dark:text-slate-200">{moment.content}</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{moment.duration} · {moment.date}</p>
+                  </div>
+                  <Headphones size={20} className="text-emerald-500/30 dark:text-emerald-400/30 absolute right-0 top-0" />
+                </div>
+              )}
+
+              {moment.type === 'diary' && (
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl">{moment.mood}</span>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500">{moment.date}</span>
+                    </div>
+                    <Book size={16} className="text-blue-500/40 dark:text-blue-400/40" />
+                  </div>
+                  <p className="text-sm text-[#2A2D34] dark:text-slate-200 leading-relaxed">
+                    {moment.content}
+                  </p>
+                </div>
+              )}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+    </div>
+  );
+};
+
 const AchievementsView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) => (
   <div className="flex-1 flex flex-col relative min-h-0 transition-colors duration-300">
     <div className="h-[56px] px-6 flex items-center justify-between bg-white dark:bg-slate-950 relative z-10 transition-colors duration-300">
@@ -1760,7 +2052,8 @@ const AchievementsView = ({ onNavigate }: { onNavigate: (id: PageId) => void }) 
 // --- Main App ---
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<PageId>('home');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentPage, setCurrentPage] = useState<PageId>('login');
   const [currentSession, setCurrentSession] = useState<Session | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -1781,18 +2074,35 @@ export default function App() {
     setCurrentPage('player');
   };
 
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    setCurrentPage('home');
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCurrentPage('login');
+  };
+
   const renderPage = () => {
+    if (!isLoggedIn) {
+      if (currentPage === 'register') return <RegisterView onRegister={handleLogin} onNavigate={navigate} />;
+      return <LoginView onLogin={handleLogin} onNavigate={navigate} />;
+    }
+
     switch (currentPage) {
       case 'home': return <HomeView onNavigate={navigate} />;
       case 'mood-checkin': return <MoodCheckinView onNavigate={navigate} />;
       case 'breathing': return <BreathingView onNavigate={navigate} />;
       case 'stats': return <StatsView onNavigate={navigate} />;
+      case 'duration-stats': return <DurationStatsView onNavigate={navigate} />;
+      case 'moments': return <MomentsView onNavigate={navigate} />;
       case 'diary': return <DiaryView onNavigate={navigate} />;
       case 'explore': return <ExploreView onNavigate={navigate} onPlay={playSession} />;
       case 'healing': return <HealingView onNavigate={navigate} />;
       case 'profile': return <ProfileView onNavigate={navigate} />;
       case 'player': return <PlayerView onNavigate={navigate} session={currentSession} />;
-      case 'settings': return <SettingsView onNavigate={navigate} isDarkMode={isDarkMode} toggleDarkMode={() => setIsDarkMode(!isDarkMode)} />;
+      case 'settings': return <SettingsView onNavigate={navigate} isDarkMode={isDarkMode} toggleDarkMode={() => setIsDarkMode(!isDarkMode)} onLogout={handleLogout} />;
       case 'community': return <CommunityView onNavigate={navigate} />;
       case 'tree-hole': return <TreeHoleView onNavigate={navigate} />;
       case 'assessment': return <AssessmentView onNavigate={navigate} />;
